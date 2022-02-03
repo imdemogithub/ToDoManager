@@ -1,0 +1,439 @@
+{% block todo %}
+<div class="app-content">
+    <div class="app-content-overlay"></div>
+    <div class="app-action">
+        <div class="action-left">
+            <ul class="list-inline">
+                <li class="list-inline-item mb-0">
+                    <button class="btn btn-secondary btn-block" data-toggle="modal" data-target="#newTaskModal">
+                        New Task
+                    </button>
+                    <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
+                        Filter
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Favourites</a>
+                        <a class="dropdown-item" href="#">Done</a>
+                        <a class="dropdown-item" href="#">Deleted</a>
+                    </div>
+                </li>
+                <li class="list-inline-item mb-0">
+                    <a href="#" class="btn btn-outline-light dropdown-toggle" data-toggle="dropdown">
+                        Sort
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="#">Ascending</a>
+                        <a class="dropdown-item" href="#">Descending</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="action-right">
+            <form class="d-flex mr-3">
+                <a href="#" class="app-sidebar-menu-button btn btn-outline-light">
+                    <i data-feather="menu" class="width-15 height-15"></i>
+                </a>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Task search"
+                           aria-describedby="button-addon1">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-light" type="button" id="button-addon1">
+                            <i class="ti-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <div class="app-pager d-flex align-items-center">
+                <div class="mr-3">1-50 of 253</div>
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination">
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Previous">
+                                <i data-feather="chevron-left" class="width-15 height-15"></i>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link" href="#" aria-label="Next">
+                                <i data-feather="chevron-right" class="width-15 height-15"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+    <div class="card card-body app-content-body">
+        <div class="app-lists">
+            <ul class="list-group list-group-flush">
+                {% for mt in my_todo %}
+                <li class="list-group-item task-list {% if mt.todo.IsCompleted %}active{% endif %}" todo-id="{{mt.todo.id}}" todo-title="{{mt.todo.Title}}" todo-desc="{{mt.todo.Description}}" todo-created-date="" todo-deadline-date="{{mt.todo.Date}}" todo-deadline-time="{{mt.todo.Time}}" todo-is-completed="{{mt.todo.IsCompleted}}" todo-tags="{{mt.todo.Tags}}" todo-members="{% for tm in todo_members %}{{tm}}{% if todo.id == tm.ToDo.id %}{{tm.Profile.id}}{% endif %}{% endfor %}">
+                    <div class="mr-3">
+                        <a href="#" class="app-sortable-handle">
+                            <i data-feather="move" class="width-15 height-15"></i>
+                        </a>
+                    </div>
+                    <div>
+                        <div class="custom-control custom-checkbox custom-checkbox-success mr-2">
+                            <input type="checkbox" class="custom-control-input" id="{{mt.todo.Title}}" {% if mt.todo.IsCompleted %}checked{% endif %}>
+                            <label class="custom-control-label" for="{{mt.todo.Title}}"></label>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="#" class="add-star mr-3" title="Add stars">
+                            <i class="fa fa-star-o font-size-16"></i>
+                        </a>
+                    </div>
+                    <div class="flex-grow-1 min-width-0">
+                        <div class="mb-1 d-flex align-items-center justify-content-between">
+                            <div class="app-list-title text-truncate">{{mt.todo.Description}}</div>
+                            
+                            <div class="pl-3 d-flex align-items-center">
+                                <div class="mr-3 d-sm-inline d-none">
+                                    <div class="badge badge-danger">{{todo.Tags}}</div>
+                                </div>
+                                <div class="mr-3 d-sm-inline">
+                                    <div class="avatar-group member-group">
+                                        {% for member in mt.members %}
+                                        <figure class="avatar avatar-sm" title="{{member.Profile.FullName}}"
+                                                data-toggle="tooltip">
+                                                {% if member.Profile.Avatar %}
+                                                    <img src="/uploads/{{member.Profile.Avatar}}"
+                                                    class="rounded-circle" alt="image">
+                                                {% else %}
+                                                    <span class="avatar-title bg-primary rounded-circle">{{member.Profile.SortName}}</span>
+                                                {% endif %}
+                                        </figure>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                
+                                <a href="{% url 'remove_todo' pk=mt.todo.id %}" title="Delete" data-toggle="tooltip">
+                                    <i data-feather="trash-2" class="width-15 height-15"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <!-- end::app-lists -->
+
+        <!-- begin:app-detail -->
+        <div class="card app-detail">
+            <div class="card-header">
+                <div class="app-detail-action-left">
+                    <a class="app-detail-close-button" href="#">
+                        <i data-feather="arrow-left" class="mr-3"></i>
+                    </a>
+                    <h5 class="mb-0">Draw design and presentation for customers. </h5>
+                </div>
+                <div class="app-detail-action-right">
+                    <div>
+                        <a href="#" class="is-completed btn btn-success" data-toggle="tooltip"
+                           title="2:44 AM">
+                            <i data-feather="check" class="mr-2"></i>
+                            <span>Completed</span>
+                        </a>
+                        <span data-toggle="modal" data-target="#editTaskModal" class="edit-todo-btn">
+                                <a href="#" class="btn btn-outline-light ml-2" title="Edit Task"
+                                   data-toggle="tooltip">
+                                    <i data-feather="edit-3"></i>
+                                </a>
+                            </span>
+                        <a href="#" class="btn btn-outline-light ml-2" data-toggle="tooltip"
+                           title="Delete Task">
+                            <i data-feather="trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="app-detail-article">
+                <div class="card-body">
+                    <div class="d-flex align-items-center p-l-r-0 m-b-20">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar-group member-group"></div>
+                        </div>
+                        <div class="ml-auto">
+                            <span class="badge bg-warning badge-pill mr-2">Theme Support</span>
+                            <a href="#" data-toggle="tooltip" title="Files" class="mr-2">
+                                <i class="fa fa-paperclip"></i>
+                            </a>
+                            <a href="#" class="mr-2">
+                                <i class="fa fa-star font-size-16 text-warning"></i>
+                            </a>
+                            <span class="text-muted">4:14 AM</span>
+                        </div>
+                    </div>
+                    <div class="description"></div>
+                </div>
+                <hr class="m-0">
+                <div class="card-body">
+                    <h6 class="mb-3 font-size-11 text-uppercase">Files</h6>
+                    <ul class="list-unstyled mb-0">
+                        <li class="small">
+                            <a href="#">
+                                <i data-feather="paperclip" class="mr-1 width-15 height-15"></i>
+                                uikit-design.psd
+                            </a>
+                        </li>
+                        <li class="small">
+                            <a href="#">
+                                <i data-feather="paperclip" class="mr-1 width-15 height-15"></i>
+                                uikit-design.sketch
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <hr class="m-0">
+                <div class="card-body">
+                    <h6 class="mb-3 font-size-11 text-uppercase">Comment</h6>
+                    <div class="reply-email-quill-editor mb-3"></div>
+                    <div class="d-flex justify-content-between">
+                        <div class="reply-email-quill-toolbar">
+                                <span class="ql-formats mr-0">
+                                  <button class="ql-bold"></button>
+                                  <button class="ql-italic"></button>
+                                  <button class="ql-underline"></button>
+                                  <button class="ql-link"></button>
+                                  <button class="ql-image"></button>
+                                </span>
+                        </div>
+                        <button class="btn btn-primary">
+                            <i data-feather="send" class="mr-2"></i>
+                            Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New ToDo</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" class="todo_form" method="post" action="{% url 'create_todo' %}">
+                    {% csrf_token %}
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">ToDo title</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="todo_title" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tags</label>
+                        <div class="col-sm-9">
+                            <select class="js-example-basic-single" name="todo_tags" multiple>
+                                <option value="Theme Support">Theme Support</option>
+                                <option value="Freelance">Freelance</option>
+                                <option selected value="Social">Social</option>
+                                <option selected value="Friends">Friends</option>
+                                <option value="Coding">Coding</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row row-sm">
+                        <label class="col-sm-3 col-form-label">Deadline</label>
+                        <div class="col-sm-5">
+                            <input type="text" name="todo_deadline" class="form-control create-event-datepicker"
+                                   placeholder="Date">
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" name="todo_time" class="form-control create-event-demo"
+                                   placeholder="Time">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Participate</label>
+                        <div class="col-sm-9">
+                            <div class="avatar-group selected-members"></div>
+                            <button type="button" class="btn btn-outline-light btn-sm btn-floating" title="Add User"
+                                    data-toggle="dropdown">
+                                <i class="ti-plus"></i>
+                            </button>
+                            <div class="dropdown-menu p-0">
+                                <div class="p-3">
+                                    <h6 class="text-uppercase font-size-11 mb-3">Add User</h6>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control search-member" placeholder="Search User"
+                                               aria-describedby="button-addon3">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-light" type="button" id="button-addon3">
+                                                <i class="ti-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush mt-2 member-list">
+                                        <select class="d-none" name="participate" multiple>
+                                        {% for connection in my_connection %}
+                                            <option value="{{connection.id}}" class="member_id_{{connection.id}}">{{connection.Profile.SortName}}</option>
+                                        {% endfor %}
+                                        </select>
+                                        {% for connection in my_connection %}
+                                        <li member-id="{{connection.id}}" class="member-list-item list-group-item d-flex align-items-center pl-0 pr-0">
+                                            <div class="mr-2">
+                                                <figure class="avatar avatar-sm" member-id="{{connection.id}}">
+                                                    {% if connection.Profile.Avatar %}
+                                                        <img src="/uploads/{{connection.Profile.Avatar}}"
+                                                        class="rounded-circle" alt="image">
+                                                    {% else %}
+                                                        <span class="avatar-title bg-primary rounded-circle">{{connection.Profile.SortName}}</span>
+                                                    {% endif %}
+                                                </figure>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">{{connection.Profile.FullName}}</h6>
+                                            </div>
+                                            <div class="dropdown ml-auto">
+                                                <a href="#" data-toggle="dropdown" is-removed="1" class="select-member-btn btn btn-outline-light btn-sm"
+                                                   aria-haspopup="true" aria-expanded="false">
+                                                    <i data-feather="plus" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <textarea class="form-control" name="todo_description" rows="6"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3"></label>
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-primary">Create</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Task</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="ti-close"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form autocomplete="off" class="todo_form" method="post" action="{% url 'create_todo' %}">
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Task title</label>
+                        <div class="col-sm-9">
+                            <input type="text" name="todo_title" class="form-control" placeholder="Title" value="">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Tags</label>
+                        <div class="col-sm-9">
+                            <select class="js-example-basic-single" multiple>
+                                <option selected value="Theme Support">Theme Support</option>
+                                <option value="Freelance">Freelance</option>
+                                <option value="Social">Social</option>
+                                <option value="Friends">Friends</option>
+                                <option value="Coding">Coding</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row row-sm">
+                        <label class="col-sm-3 col-form-label">Deadline</label>
+                        <div class="col-sm-5">
+                            <input type="text" class="form-control create-event-datepicker"
+                                   placeholder="Date" name="todo_deadline" value="">
+                        </div>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control create-event-demo" value="11:57"
+                                   placeholder="Time" name="todo_time">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Participate</label>
+                        <div class="col-sm-9">
+                            <div class="avatar-group selected-members"></div>
+                            <button type="button" class="btn btn-outline-light btn-sm btn-floating" title="Add User"
+                                    data-toggle="dropdown">
+                                <i class="ti-plus"></i>
+                            </button>
+                            <div class="dropdown-menu p-0">
+                                <div class="p-3">
+                                    <h6 class="text-uppercase font-size-11 mb-3">Add User</h6>
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" class="form-control search-member" placeholder="Search User"
+                                               aria-describedby="button-addon3">
+                                        <div class="input-group-append">
+                                            <button class="btn btn-outline-light" type="button" id="button-addon3">
+                                                <i class="ti-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <ul class="list-group list-group-flush mt-2 member-list">
+                                        <select class="d-none" name="participate" multiple>
+                                        {% for connection in my_connection %}
+                                            <option value="{{connection.Profile.id}}" class="member_id_{{connection.Profile.id}}">{{connection.Profile.SortName}}</option>
+                                        {% endfor %}
+                                        </select>
+                                        {% for connection in my_connection %}
+                                        <li member-id="{{connection.Profile.id}}" class="member-list-item list-group-item d-flex align-items-center pl-0 pr-0">
+                                            <div class="mr-2">
+                                                <figure class="avatar avatar-sm" member-id="{{connection.id}}">
+                                                    {% if connection.Profile.Avatar %}
+                                                        <img src="/uploads/{{connection.Profile.Avatar}}"
+                                                        class="rounded-circle" alt="image">
+                                                    {% else %}
+                                                        <span class="avatar-title bg-primary rounded-circle">{{connection.Profile.SortName}}</span>
+                                                    {% endif %}
+                                                </figure>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">{{connection.Profile.FullName}}</h6>
+                                            </div>
+                                            <div class="dropdown ml-auto">
+                                                <a href="#" data-toggle="dropdown" is-removed="1" class="select-member-btn btn btn-outline-light btn-sm"
+                                                   aria-haspopup="true" aria-expanded="false">
+                                                    <i data-feather="plus" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">Description</label>
+                        <div class="col-sm-9">
+                            <textarea name="todo_description" class="form-control" rows="6"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-3"></label>
+                        <div class="col-sm-9">
+                            <button type="submit" class="btn btn-success">
+                                <i data-feather="check" class="mr-2"></i>
+                                Save
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

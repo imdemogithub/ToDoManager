@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{current_page}}
+    </title>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{% static 'media/image/favicon.png' %}"/>
+
+    <!-- Plugin styles -->
+    <link rel="stylesheet" href="{% static 'vendors/bundle.css' %}" type="text/css">
+    <link rel="stylesheet" href="{% static 'vendors/font-awesome/css/font-awesome.min.css' %}" type="text/css">
+
+    <!-- quill -->
+    <link href="{% static 'vendors/quill/quill.snow.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Clockpicker -->
+    <link rel="stylesheet" href="{% static 'vendors/clockpicker/bootstrap-clockpicker.min.css' %}" type="text/css">
+
+    <!-- Datepicker -->
+    <link rel="stylesheet" href="{% static 'vendors/datepicker/daterangepicker.css' %}" type="text/css">
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{% static 'vendors/select2/css/select2.min.css' %}" type="text/css">
+    
+    {% block css %}
+    {% endblock %}
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="{% static 'css/app.min.css' %}" type="text/css">
+
+    <style>
+        /* floating label style */
+        .form-label-group {
+  position: relative;
+  margin-bottom: 1rem;
+}
+
+.form-label-group > input,
+.form-label-group > label {
+  height: 3.125rem !important;
+  padding: .75rem !important;
+  padding-left: 1.1rem !important;
+}
+
+.form-label-group > label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  padding-left: 1.1rem !important;
+  margin-bottom: 0; /* Override default `<label>` margin */
+  line-height: 1.5;
+  color: #495057;
+  pointer-events: none;
+  cursor: text; /* Match the input under the label */
+  border: 1px solid transparent;
+  border-radius: .25rem;
+  transition: all .1s ease-in-out;
+}
+
+.form-label-group input::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input:-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-ms-input-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::-moz-placeholder {
+  color: transparent;
+}
+
+.form-label-group input::placeholder {
+  color: transparent;
+}
+
+.form-label-group input:not(:placeholder-shown) {
+  padding-top: 1.25rem;
+  padding-bottom: .25rem;
+}
+
+.form-label-group input:not(:placeholder-shown) ~ label {
+  padding-top: .25rem !important;
+  padding-bottom: .25rem !important;
+  font-size: 12px !important;
+  color: #777 !important;
+}
+
+/* Fallback for Edge
+-------------------------------------------------- */
+@supports (-ms-ime-align: auto) {
+  .form-label-group > label {
+    display: none;
+  }
+  .form-label-group input::-ms-input-placeholder {
+    color: #777;
+  }
+}
+.search-hide {
+  display: none !important;
+}
+    </style>
+</head>
+<body class="
+    {% if current_page in form_membership %}
+    form-membership
+    {% endif %}">
+
+<!-- begin::preloader-->
+<div class="preloader">
+    <div class="preloader-icon"></div>
+</div>
+<!-- end::preloader -->
+    {% block main_content %}
+    {% endblock %}
+<!-- Plugin scripts -->
+<script src="{% static 'vendors/bundle.js' %}"></script>
+
+<!-- Tagsinput -->
+<script src="{% static 'vendors/tagsinput/bootstrap-tagsinput.js' %}"></script>
+<script src="{% static 'js/examples/tagsinput.js' %}"></script>
+
+<!-- quill -->
+<script src="{% static 'vendors/quill/quill.js' %}"></script>
+
+<!-- Clockpicker -->
+<script src="{% static 'vendors/clockpicker/bootstrap-clockpicker.min.js' %}"></script>
+<script src="{% static 'js/examples/clockpicker.js' %}"></script>
+
+<!-- Select2 -->
+<script src="{% static 'vendors/select2/js/select2.min.js' %}"></script>
+<script src="{% static 'js/examples/select2.js' %}"></script>
+
+<script>
+  new Quill('.reply-email-quill-editor', {
+      modules: {
+          toolbar: ".reply-email-quill-toolbar"
+      },
+      placeholder: "Type something... ",
+      theme: "snow"
+  });
+
+  $(function () {
+      $(document).on('click', '.app-block .app-content .app-action .action-left input[type="checkbox"]', function () {
+          $('.app-lists ul li input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+          if ($(this).prop('checked')) {
+              $('.app-lists ul li input[type="checkbox"]').closest('li').addClass('active');
+          } else {
+              $('.app-lists ul li input[type="checkbox"]').closest('li').removeClass('active');
+          }
+      });
+
+      $(document).on('click', '.app-lists ul li input[type="checkbox"]', function () {
+          if ($(this).prop('checked')) {
+              $(this).closest('li').addClass('active');
+          } else {
+              $(this).closest('li').removeClass('active');
+          }
+      });
+
+      $(document).on('click', '.app-block .app-content .app-content-body .app-lists ul.list-group li.list-group-item', function (e) {
+          if (!$(e.target).is('.custom-control, .custom-control *, a, a *')) {
+              $('.app-detail').addClass('show').one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function () {
+                  $('.app-block .app-content .app-content-body .app-detail .app-detail-article').niceScroll().resize();
+              });
+          }
+      });
+
+      $(document).on('click', 'a.app-detail-close-button', function () {
+          $('.app-detail').removeClass('show');
+          return false;
+      });
+
+      $(document).on('click', '.app-sidebar-menu-button', function () {
+          $('.app-block .app-sidebar, .app-content-overlay').addClass('show');
+          // $('.app-block .app-sidebar .app-sidebar-menu').niceScroll().resize();
+          return false;
+      });
+
+      $(document).on('click', '.app-content-overlay', function () {
+          $('.app-block .app-sidebar, .app-content-overlay').removeClass('show');
+          return false;
+      });
+
+      $('.app-block .app-content .app-content-body .app-lists ul').sortable({
+          axis: "y",
+          cursor: "move",
+          handle: '.app-sortable-handle'
+      }).disableSelection();
+  });
+</script>
+<!-- App scripts -->
+<script src="{% static 'js/app.min.js' %}"></script>
+<script>
+    $(document).ready(function() {
+      toastr.options = {
+        timeOut: 3000,
+        progressBar: true,
+        showMethod: "fadeIn",
+        hideMethod: "fadeOut",
+        showDuration: 200,
+        hideDuration: 200,
+        positionClass: "toast-top-center"
+      };
+    })
+</script>
+
+{% block scripts %}
+{% endblock %}
+</body>
+
+
+</html>
