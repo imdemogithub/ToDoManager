@@ -79,6 +79,7 @@ def profile_data(request):
     # for m in master:
     #     print('master data: ', m.__dict__)
 
+
 # profile image upload
 def upload_image(request):
     master = Master.objects.get(Email = request.session['email'])
