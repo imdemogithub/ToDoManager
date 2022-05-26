@@ -5,7 +5,7 @@ from .models import *
 from random import randint
 import datetime
 
-import pyttsx3
+# import pyttsx3
 import os
 from django.conf import settings
 
@@ -25,10 +25,10 @@ def login_page(request):
 
     default_data['current_page'] = 'login_page'
 
-    engine = pyttsx3.init()
-    engine.say("login page opened.")
-    engine.runAndWait()
-    engine.stop()
+    # engine = pyttsx3.init()
+    # engine.say("login page opened.")
+    # engine.runAndWait()
+    # engine.stop()
     
     return render(request, 'login_page.html', default_data)
 
